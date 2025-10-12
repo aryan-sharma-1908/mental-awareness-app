@@ -1,20 +1,80 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Logo } from '../components/Logo';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { Logo } from "../components/Logo";
+import { Slide, ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+export function Register() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [errorOccured, setErrorOccurred] = useState("");
+  const navigate = useNavigate();
 
-export function Signup() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-
-  const handleSubmit = (e) => {
+  const handleRegistration = async (e) => {
     e.preventDefault();
-    // Handle signup logic here
-    console.log('Signup attempt:', { name, email, password });
+
+    try {
+      const response = await fetch("http://localhost:5143/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.message || "Registration failed!", {
+          position: "top-center",
+          autoClose: 750,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Slide,
+        });
+      } else {
+        toast.success("Registered Successfully." || data.message, {
+          position: "top-center",
+          autoClose: 750,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Slide,
+        });
+        setTimeout(() => {
+          navigate('/login');
+        }, 1000);
+      }
+    } catch (error) {
+      toast.error("Network error. Please try again!", {
+        position: "top-center",
+        autoClose: 750,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+      console.error("Error occurred while registration: ", error);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <ToastContainer />
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link to="/" className="flex justify-center">
           <Logo className="h-12 w-auto" />
@@ -23,8 +83,11 @@ export function Signup() {
           Create your account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Already have an account?{' '}
-          <Link to="/login" className="font-medium text-purple-600 hover:text-purple-500">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="font-medium text-purple-600 hover:text-purple-500"
+          >
             Sign in
           </Link>
         </p>
@@ -32,9 +95,17 @@ export function Signup() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit} method='POST' content='application/json'>
+          <form
+            className="space-y-6"
+            onSubmit={handleRegistration}
+            method="POST"
+            content="application/json"
+          >
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Full name
               </label>
               <div className="mt-1">
@@ -52,7 +123,10 @@ export function Signup() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email address
               </label>
               <div className="mt-1">
@@ -70,7 +144,10 @@ export function Signup() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <div className="mt-1">
@@ -99,12 +176,18 @@ export function Signup() {
 
           <div className="mt-6">
             <p className="text-xs text-center text-gray-600">
-              By signing up, you agree to our{' '}
-              <Link to="/terms" className="text-purple-600 hover:text-purple-500">
+              By signing up, you agree to our{" "}
+              <Link
+                to="/terms"
+                className="text-purple-600 hover:text-purple-500"
+              >
                 Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link to="/privacy" className="text-purple-600 hover:text-purple-500">
+              </Link>{" "}
+              and{" "}
+              <Link
+                to="/privacy"
+                className="text-purple-600 hover:text-purple-500"
+              >
                 Privacy Policy
               </Link>
             </p>

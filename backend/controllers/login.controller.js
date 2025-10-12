@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { set } = require("mongoose");
 const userModel = require("../models/user.model");
-
+const cookies = require('cookie-parser');
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const user = await userModel.findOne9({ email: email }).select("+password");
+    const user = await userModel.findOne({ email: email }).select("+password");
 
     if (!user) {
       return res.status(401).json({
@@ -41,10 +41,16 @@ router.post("/", async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
     );
 
+    res.cookie('token',token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
     res.status(200).json({
       success: true,
       message: "Login successful",
-      token: token,
       user: {
         id: user._id,
         email: user.email,

@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+
 const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        minlength: 3,
+        trim: true
+    },
     email: {
         type: String,
         required: true,
@@ -16,7 +23,7 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-userSchema.pre('save', async (next) => {
+userSchema.pre('save', async function (next) {
     if(!this.isModified('password')) {
         return next();
     }

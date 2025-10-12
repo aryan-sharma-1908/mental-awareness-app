@@ -7,12 +7,13 @@ require("dotenv").config();
 const router = express.Router();
 const emailRegexSafe = require("email-regex-safe");
 
-router.post("/", async (req, res) => {
-  const { password, email } = req.body;
+const x = router.post("/", async (req, res) => {
+  try {
+  const {email, password, name} = req.body;
 
-  if (!password || !email) {
+  if (!password || !email || !name) {
     return res.status(400).json({
-      message: "Email and password are required",
+      message: "Fullname, Email and password are required",
     });
   }
 
@@ -28,7 +29,6 @@ router.post("/", async (req, res) => {
     });
   }
 
-  try {
     const duplicateUser = await userModel.findOne({ email: email });
     if (duplicateUser) {
       return res.status(409).json({
@@ -39,17 +39,19 @@ router.post("/", async (req, res) => {
     const newUser = new userModel({
       email: email,
       password: password,
+      name: name // Add if you want to store name
     });
 
     await newUser.save();
 
+    // FIXED: Correct JWT signing syntax
     const token = jwt.sign(
       {
         id: newUser._id,
         email: email,
       },
+      process.env.JWT_SECRET, // This should be the secret string directly
       {
-        jwtSecret: process.env.JWT_SECRET,
         expiresIn: process.env.JWT_EXPIRES_IN || "7d",
       }
     );
@@ -61,42 +63,17 @@ router.post("/", async (req, res) => {
       user: {
         id: newUser._id,
         email: email,
+        name: name
       },
     });
   } catch (error) {
     console.error("Error occurred during registration:", error);
     res.status(500).json({
+      success: false,
       message: "Internal server error",
+      error: error.message
     });
   }
 });
-
-const handleRegister = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await fetch('/register', {
-      method: 'POST',
-      header: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      })
-    })
-
-    const data = await response.json();
-
-    if(data.success) {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user',JSON.stringify(data.user));
-      alert('Registration successful!'); 
-    }
-  } catch (error) {
-    console.error('Error during registration:', error);
-    alert('An error occurred. Please try again later.')
-  }
-
-}
 
 module.exports = router;
