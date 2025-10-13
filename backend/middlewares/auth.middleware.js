@@ -1,6 +1,10 @@
 const cookies = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const checkAuth = (req,res,next) => {
+    console.log('=== CheckAuth Middleware ===');
+    console.log('All cookies:', req.cookies);
+    console.log('Token:', req.cookies.token);
+
     const token = req.cookies?.token || '';
 
     if(!token) {

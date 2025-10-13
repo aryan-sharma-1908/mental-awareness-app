@@ -24,7 +24,7 @@ export function Navbar() {
     setAnchorEl(null);
   };
   
-  const { isLoggedIn } = useContext(LoginContext);
+  const { isLoggedIn, selectedAvatar } = useContext(LoginContext);
   const location = useLocation();
   const isAuthPage =
     location.pathname === "/login" || location.pathname === "/signup";
@@ -81,14 +81,14 @@ export function Navbar() {
               <>
                 <Tooltip title="Profile" placement="bottom-end">
                   <Button 
-                    className="!w-[32px] !h-[32px] !min-w-[32px] !rounded-full !p-1 !shadow-md !overflow-hidden"
+                    className="!w-[32px] !h-[32px] !min-w-[32px] !rounded-full !p-0  !shadow-md !overflow-hidden"
                     onClick={handleClick}
                     aria-controls={open ? 'account-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                   >
                     <img
-                      src="/boy.png"
+                      src={selectedAvatar}
                       alt="Profile"
                       className="w-full h-full"
                     />

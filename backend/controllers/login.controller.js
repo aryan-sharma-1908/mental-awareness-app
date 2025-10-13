@@ -1,9 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { set } = require("mongoose");
 const userModel = require("../models/user.model");
-const cookies = require('cookie-parser');
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -53,6 +51,9 @@ router.post("/", async (req, res) => {
       message: "Login successful",
       user: {
         id: user._id,
+        username: user.username,
+        name: user.name,
+        avatar: user.avatar,
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
@@ -67,33 +68,5 @@ router.post("/", async (req, res) => {
   }
 });
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-
-  try {
-    const response = await fetch("/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      setUser(data.user);
-      alert("login successful");
-    }
-  } catch (error) {
-    console.error("Error while logging in", error);
-    alert("Error while logging in");
-  }
-};
 
 module.exports = router;

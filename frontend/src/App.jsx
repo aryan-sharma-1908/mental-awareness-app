@@ -8,16 +8,19 @@ import { Register } from "./pages/Register";
 import { Exercises } from "./pages/Exercises";
 import { Community } from "./pages/Community";
 import { LearnMore } from "./pages/LearnMore";
-import ProfileGeneration from "./pages/ProfileGeneration";
+import ProfileSetup from "./pages/ProfileSetup";
 
 export const LoginContext = createContext();
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState('/boy.png');
+  const [username, setUsername] = useState('');
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50">
-      <LoginContext.Provider value={{isLoggedIn,setIsLoggedIn}}>
+      <LoginContext.Provider value={{isLoggedIn,setIsLoggedIn,selectedAvatar,setSelectedAvatar,username, setUsername}}>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -26,7 +29,7 @@ function App() {
           <Route path="/exercises" element={<Exercises />} />
           <Route path="/community" element={<Community />} />
           <Route path="/learn-more" element={<LearnMore />} />
-          <Route path="/profile-generation" element={<ProfileGeneration />} />
+          <Route path="/profile/setup" element={<ProfileSetup />} />
         </Routes>
         <Footer />
       </LoginContext.Provider>

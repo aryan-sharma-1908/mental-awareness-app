@@ -9,7 +9,8 @@ const connectDB = require('./database/database.js');
 const loginController = require('./controllers/login.controller.js');
 const registerController = require('./controllers/register.controller.js');
 const profileRoute = require('./routes/profile.route.js');
-
+const profileController = require('./controllers/profile.controller.js');
+const checkAuth = require('./middlewares/auth.middleware.js');
 const whiteList = ['http://localhost:5173', 'http://127.0.0.1:5173'];
 const corsOptions = {
     origin: function(origin, callback) {
@@ -30,7 +31,7 @@ app.use(morgan('dev'));
 
 app.use('/register', registerController);
 app.use('/login', loginController);
-app.use('/profile', profileRoute);
+app.use('/profile', checkAuth, profileController);
 
 app.listen(PORT,() => {
     console.log(`Server is running on port ${PORT}`);
