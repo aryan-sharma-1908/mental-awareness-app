@@ -32,9 +32,9 @@ app.use(morgan('dev'));
 app.use('/',(req,res) => {
     res.send('Server is running')
 })
-app.use('/register', registerController);
-app.use('/login', loginController);
-app.use('/profile', checkAuth, profileController);
+app.use('/api/register', registerController);
+app.use('/api/login', loginController);
+app.use('/api/profile', checkAuth, profileController);
 
 app.listen(PORT,() => {
     console.log(`Server is running on port ${PORT}`);

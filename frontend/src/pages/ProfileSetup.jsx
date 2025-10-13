@@ -79,7 +79,7 @@ const ProfileSetup = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://mental-awareness-app.onrender.com/profile/setup", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/profile/setup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

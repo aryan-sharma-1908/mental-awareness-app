@@ -14,7 +14,7 @@ export function Register() {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://mental-awareness-app.onrender.com/register", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
