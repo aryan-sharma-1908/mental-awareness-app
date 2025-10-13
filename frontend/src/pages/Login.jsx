@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Logo } from "../components/Logo";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import { LoginContext } from "../App";
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5143';
 export function Login() {
   const { setIsLoggedIn, setUser } = useContext(LoginContext);
   const [email, setEmail] = useState("");
