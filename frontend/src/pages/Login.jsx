@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Logo } from "../components/Logo";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import { LoginContext } from "../App";
-
+const BASE_URL = import.meta.env.VITE_API_URL;
 export function Login() {
   const { setIsLoggedIn, setUser } = useContext(LoginContext);
   const [email, setEmail] = useState("");
@@ -16,7 +16,7 @@ export function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
+      const response = await fetch(`${BASE_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

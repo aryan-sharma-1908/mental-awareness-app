@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Logo } from "../components/Logo";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+const BASE_URL = import.meta.env.VITE_API_URL;
 export function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +15,7 @@ export function Register() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/register`, {
+      const response = await fetch(`${BASE_URL}/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

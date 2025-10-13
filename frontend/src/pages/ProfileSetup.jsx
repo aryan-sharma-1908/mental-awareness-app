@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, Slide } from "react-toastify";
 import { LoginContext } from "../App";
-
+const BASE_URL = import.meta.env.VITE_API_URL;
 const ProfileSetup = () => {
   const {selectedAvatar, setSelectedAvatar, username, setUsername} = useContext(LoginContext);
   const navigate = useNavigate();
@@ -79,7 +79,7 @@ const ProfileSetup = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/profile/setup`, {
+      const response = await fetch(`${BASE_URL}/api/profile/setup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
