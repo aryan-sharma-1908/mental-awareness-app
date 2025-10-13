@@ -30,7 +30,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(morgan('dev'));
 
 app.use('/',(req,res) => {
-    res.send('Server is running';)
+    res.send('Server is running')
 })
 app.use('/register', registerController);
 app.use('/login', loginController);
