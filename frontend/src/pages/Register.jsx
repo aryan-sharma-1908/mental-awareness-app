@@ -14,7 +14,7 @@ export function Register() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5143/register", {
+      const response = await fetch("https://mental-awareness-app.onrender.com/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

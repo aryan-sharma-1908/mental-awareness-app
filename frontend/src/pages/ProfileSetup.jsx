@@ -79,7 +79,7 @@ const ProfileSetup = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5143/profile/setup", {
+      const response = await fetch("https://mental-awareness-app.onrender.com/profile/setup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
