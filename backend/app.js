@@ -11,7 +11,7 @@ const registerController = require('./controllers/register.controller.js');
 const profileRoute = require('./routes/profile.route.js');
 const profileController = require('./controllers/profile.controller.js');
 const checkAuth = require('./middlewares/auth.middleware.js');
-const whiteList = ['http://localhost:5173', 'http://127.0.0.1:5173',' https://www.mongodb.com/docs/atlas/security-whitelist/', 'https://mental-awareness-app-git-main-aryan-sharmas-projects-62cf0133.vercel.app/'];
+const whiteList = ['http://localhost:5173', 'http://127.0.0.1:5173','https://www.mongodb.com/docs/atlas/security-whitelist/', 'https://mental-awareness-app-git-main-aryan-sharmas-projects-62cf0133.vercel.app/'];
 const corsOptions = {
     origin: function(origin, callback) {
          if(!origin) return callback(null, true);
@@ -29,15 +29,18 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(morgan('dev'));
 
-app.use('/',(req,res) => {
+app.get('/',(req,res) => {
     res.send('Server is running')
 })
 app.use('/api/register', registerController);
 app.use('/api/login', loginController);
 app.use('/api/profile', checkAuth, profileController);
 
-app.listen(PORT,() => {
-    console.log(`Server is running on port ${PORT}`);
-    connectDB();
-})
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}).catch(err => {
+    console.error('Failed to connect to DB', err);
+});
 
