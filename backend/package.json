@@ -4,7 +4,7 @@
   "description": "Backend for Mental Awareness App",
   "author": "Aryan Sharma",
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",       
