@@ -94,13 +94,13 @@ const ProfileSetup = () => {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        setShowDialog(false);
         toast.success("Profile saved successfully!", {
           position: "top-center",
           autoClose: 1500,
           transition: Slide,
         });
         // Close dialog to show updated profile
-        setShowDialog(false);
 
         // Optional: Navigate to dashboard after a delay
         setTimeout(() => {
