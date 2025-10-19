@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Menu as MenuIcon, X } from "lucide-react";
 import { LoginContext } from "../App";
@@ -12,8 +12,11 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import Logout from "@mui/icons-material/Logout";
 
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5143";
+
 export function Navbar() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   
   const handleClick = (event) => {
@@ -23,13 +26,34 @@ export function Navbar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  
-  const { isLoggedIn, selectedAvatar } = useContext(LoginContext);
-  const location = useLocation();
-  const isAuthPage =
-    location.pathname === "/login" || location.pathname === "/signup";
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  
+  const { isLoggedIn, selectedAvatar, setIsLoggedIn } = useContext(LoginContext);
+
+  const location = useLocation();
+
+  const isAuthPage =
+  location.pathname === "/login" || location.pathname === "/signup";
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  const handleLogout = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      })
+
+      if(res.ok) {
+        setIsLoggedIn(false);
+        toast.success('Logged Out Successfully!');
+        navigate('/login');
+      } else {
+        console.log('Failed to Logout: ', await res.text());
+      }
+    } catch(error) {
+      console.error('Error logging out: ',error);
+    }
+  }
   if (isAuthPage) return null;
 
   return (
@@ -137,7 +161,7 @@ export function Navbar() {
                     <Avatar /> Profile
                   </MenuItem>
                   <Divider />
-                  <MenuItem onClick={handleClose}>
+                  <MenuItem onClick={() => {handleClose(); handleLogout();}}>
                     <ListItemIcon>
                       <Logout fontSize="small" />
                     </ListItemIcon>

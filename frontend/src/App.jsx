@@ -16,11 +16,11 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState('/boy.png');
   const [username, setUsername] = useState('');
-  
+  const [user, setUser] = useState(null);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50">
-      <LoginContext.Provider value={{isLoggedIn,setIsLoggedIn,selectedAvatar,setSelectedAvatar,username, setUsername}}>
+      <LoginContext.Provider value={{isLoggedIn,setIsLoggedIn,selectedAvatar,setSelectedAvatar,username, setUsername, user, setUser}}>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />

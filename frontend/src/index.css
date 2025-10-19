@@ -8,3 +8,7 @@
     margin: 0 auto;
     background-color: white;
 }
+
+.Mui-focused .MuiOutlinedInput-notchedOutline {
+            borderColor: "#ff5722";
+ }

@@ -1,13 +1,9 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 const userModel = require("../models/user.model.js");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const router = express.Router();
 const emailRegexSafe = require("email-regex-safe");
 
-const x = router.post("/", async (req, res) => {
+exports.register = async (req, res) => {
   try {
   const {email, password, name} = req.body;
 
@@ -74,6 +70,5 @@ const x = router.post("/", async (req, res) => {
       error: error.message
     });
   }
-});
+};
 
-module.exports = router;

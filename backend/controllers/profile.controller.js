@@ -1,8 +1,9 @@
 const express = require("express");
-const userModel = require("../models/user.model");
+const User = require("../models/user.model");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-router.post("/setup", async (req, res) => {
+
+exports.setupProfile = async (req, res) => {
   try {
     const { avatar, username } = req.body;
 
@@ -13,7 +14,7 @@ router.post("/setup", async (req, res) => {
       });
     }
 
-    const user = await userModel.findById(req.user.id);
+    const user = await User.findById(req.user.id);
 
     if (!user) {
       return res.status(404).json({
@@ -21,7 +22,7 @@ router.post("/setup", async (req, res) => {
         message: "User not found",
       });
     }
-    const existingUser = await userModel.findOne({
+    const existingUser = await User.findOne({
       username,
       _id: { $ne: user._id },
     });
@@ -57,6 +58,30 @@ router.post("/setup", async (req, res) => {
       message: "Server error",
     });
   }
-});
+};
 
-module.exports = router;
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+
+    if(!user) {
+      return res.status(404).json({
+        sucess: false,
+        message: 'User not found'
+      })
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile fetched successfully',
+      user
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error. Please try again later.',
+    })
+    console.error('Error fetching profile: ', error);
+  }
+}
+

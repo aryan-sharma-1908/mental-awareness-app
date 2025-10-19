@@ -1,10 +1,8 @@
-const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model");
-const router = express.Router();
 
-router.post("/", async (req, res) => {
+exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -40,9 +38,9 @@ router.post("/", async (req, res) => {
     );
 
     res.cookie('token',token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'None',
+      httpOnly: true, // true to prevent client-side JS from reading the cookie
+      secure: process.env.NODE_ENV === 'production', // set to true if using HTTPS else false
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // set to 'None' for cross-site cookies and 'Lax' or 'Strict' for same-site cookies
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
@@ -66,7 +64,7 @@ router.post("/", async (req, res) => {
       message: "Internal server error",
     });
   }
-});
+};
 
 
-module.exports = router;
+

@@ -6,23 +6,27 @@ const PORT = process.env.PORT || 3000;
 const morgan = require("morgan");
 const cookies = require("cookie-parser");
 const connectDB = require("./database/database.js");
-const loginController = require("./controllers/login.controller.js");
-const registerController = require("./controllers/register.controller.js");
+const registerRoute = require('./routes/register.route.js');
 const profileRoute = require("./routes/profile.route.js");
-const profileController = require("./controllers/profile.controller.js");
 const checkAuth = require("./middlewares/auth.middleware.js");
+const loginRoute = require('./routes/login.route.js');
+const postRoute = require('./routes/post.route.js');
+const logoutRoute = require('./routes/logout.route.js');
 const whiteList = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "https://www.mongodb.com/docs/atlas/security-whitelist",
-  "https://mental-awareness-2yh8mzchz-aryan-sharmas-projects-62cf0133.vercel.app",
+  "https://mental-awareness-app.vercel.app",
   "https://mental-awareness-app-git-main-aryan-sharmas-projects-62cf0133.vercel.app",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
     if (whiteList.indexOf(origin) !== -1) callback(null, true);
-    else callback(new Error("Not allowed by CORS"));
+    else {
+      console.warn(`Blocked by CORS: ${origin}`);
+      callback(new Error("Not allowed by CORS"));
+    }
   },
   credentials: true,
 };
@@ -35,9 +39,11 @@ app.use(morgan("dev"));
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
-app.use("/api/register", registerController);
-app.use("/api/login", loginController);
-app.use("/api/profile", checkAuth, profileController);
+app.use("/api/register", registerRoute);
+app.use("/api/login", loginRoute);
+app.use("/api/profile", profileRoute);
+app.use("/api/community", postRoute);
+app.use("/api/logout", logoutRoute);
 
 connectDB()
   .then(() => {
