@@ -28,7 +28,7 @@ export function Navbar() {
   };
 
   
-  const { isLoggedIn, selectedAvatar, setIsLoggedIn } = useContext(LoginContext);
+  const { isLoggedIn, selectedAvatar, setIsLoggedIn, setSelectedAvatar, setUser, setUsername } = useContext(LoginContext);
 
   const location = useLocation();
 
@@ -45,6 +45,11 @@ export function Navbar() {
 
       if(res.ok) {
         setIsLoggedIn(false);
+        setUser(null);
+        setUsername('');
+        setSelectedAvatar('/boy.png')
+        localStorage.removeItem('avatar');
+        localStorage.removeItem('username');
         toast.success('Logged Out Successfully!');
         navigate('/login');
       } else {

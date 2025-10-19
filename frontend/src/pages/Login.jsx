@@ -5,7 +5,7 @@ import { Slide, ToastContainer, toast } from "react-toastify";
 import { LoginContext } from "../App";
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5143';
 export function Login() {
-  const { setIsLoggedIn, setUser } = useContext(LoginContext);
+  const { setIsLoggedIn, setUser, user } = useContext(LoginContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -42,6 +42,9 @@ export function Login() {
         });
         
         setIsLoggedIn(true);
+        setUser(data.user);
+        localStorage.setItem('avatar',user.avatar || '/boy.png');
+        localStorage.setItem('username',user.username || '');
         
         // Check if user has completed profile
         if (!data.user.username || !data.user.profileCompleted) {
