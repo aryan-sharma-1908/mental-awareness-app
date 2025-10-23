@@ -8,6 +8,7 @@ exports.setupProfile = async (req, res) => {
     const { avatar, username } = req.body;
 
     if (!username) {
+      console.error("Username is required");
       return res.status(400).json({
         success: false,
         message: "Username is required",
@@ -17,6 +18,7 @@ exports.setupProfile = async (req, res) => {
     const user = await User.findById(req.user.id);
 
     if (!user) {
+      console.error('User not found for profile setup');
       return res.status(404).json({
         success: false,
         message: "User not found",
@@ -28,6 +30,7 @@ exports.setupProfile = async (req, res) => {
     });
 
     if (existingUser) {
+      console.error('Username already taken');
       return res.status(400).json({
         success: false,
         message: "Username already taken",
@@ -65,8 +68,9 @@ exports.getProfile = async (req, res) => {
     const user = await User.findById(req.user.id).select('-password');
 
     if(!user) {
+      console.error('User not found for profile retrieval');
       return res.status(404).json({
-        sucess: false,
+        success: false,
         message: 'User not found'
       })
     }

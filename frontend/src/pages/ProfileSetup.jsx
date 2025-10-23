@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, Slide } from "react-toastify";
-import { LoginContext } from "../App";
+import { AuthContext } from "../components/AuthContext";
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5143';
 const ProfileSetup = () => {
-  const {selectedAvatar, setSelectedAvatar, username, setUsername} = useContext(LoginContext);
+  const {selectedAvatar, setSelectedAvatar, username, setUsername} = useContext(AuthContext);
   const navigate = useNavigate();
   const [showDialog, setShowDialog] = useState(false);
   const [generatedUsernames, setGeneratedUsernames] = useState([]);

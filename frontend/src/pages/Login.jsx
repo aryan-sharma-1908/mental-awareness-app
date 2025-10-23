@@ -2,10 +2,11 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Logo } from "../components/Logo";
 import { Slide, ToastContainer, toast } from "react-toastify";
-import { LoginContext } from "../App";
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5143';
+import { AuthContext } from "../components/AuthContext";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5143";
 export function Login() {
-  const { setIsLoggedIn, setUser, user } = useContext(LoginContext);
+  const { setIsAuthenticated, setUser, setSelectedAvatar, setUsername } =
+    useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ export function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // ADD THIS - IMPORTANT!
+        credentials: "include",
         body: JSON.stringify({
           email: email,
           password: password,
@@ -29,7 +30,7 @@ export function Login() {
       });
 
       const data = await response.json();
-      
+
       if (response.ok && data.success) {
         toast.success(data.message || "Logged in successfully!", {
           position: "top-center",
@@ -40,14 +41,18 @@ export function Login() {
           draggable: true,
           transition: Slide,
         });
-        
-        setIsLoggedIn(true);
+
+        setIsAuthenticated(true);
         setUser(data.user);
-        localStorage.setItem('avatar',user.avatar || '/boy.png');
-        localStorage.setItem('username',user.username || '');
-        
+        // Update context avatar and username immediately so Navbar reflects the change
+        setSelectedAvatar(data?.user?.avatar || "/boy.png");
+        setUsername(data?.user?.username || "");
+        // Persist to localStorage for quick restores
+        localStorage.setItem("avatar", data?.user?.avatar || "/boy.png");
+        localStorage.setItem("username", data?.user?.username || "");
+
         // Check if user has completed profile
-        if (!data.user.username || !data.user.profileCompleted) {
+        if (!data?.user?.profileCompleted) {
           // Redirect to profile setup
           setTimeout(() => {
             navigate("/profile/setup");
@@ -68,10 +73,10 @@ export function Login() {
           draggable: true,
           transition: Slide,
         });
-        setIsLoggedIn(false);
+        setIsAuthenticated(false);
       }
     } catch (error) {
-      toast.error("Network error. Please try again!", {
+      toast.error(error.message || "Network error", {
         position: "top-center",
         autoClose: 750,
         hideProgressBar: true,

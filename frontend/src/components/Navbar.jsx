@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Menu as MenuIcon, X } from "lucide-react";
-import { LoginContext } from "../App";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import Avatar from "@mui/material/Avatar";
@@ -11,10 +10,12 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import Logout from "@mui/icons-material/Logout";
-
+import { ToastContainer, toast } from "react-toastify";
+import { AuthContext } from "./AuthContext";
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5143";
 
 export function Navbar() {
+  const { isAuthenticated, selectedAvatar, setIsAuthenticated, setSelectedAvatar, setUser, setUsername, handleLogOut } = useContext(AuthContext);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -27,8 +28,9 @@ export function Navbar() {
     setAnchorEl(null);
   };
 
-  
-  const { isLoggedIn, selectedAvatar, setIsLoggedIn, setSelectedAvatar, setUser, setUsername } = useContext(LoginContext);
+  const handleProfileClick = () => {
+    navigate('/profile');
+  }  
 
   const location = useLocation();
 
@@ -36,33 +38,11 @@ export function Navbar() {
   location.pathname === "/login" || location.pathname === "/signup";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  const handleLogout = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/api/logout`, {
-        method: 'POST',
-        credentials: 'include'
-      })
-
-      if(res.ok) {
-        setIsLoggedIn(false);
-        setUser(null);
-        setUsername('');
-        setSelectedAvatar('/boy.png')
-        localStorage.removeItem('avatar');
-        localStorage.removeItem('username');
-        toast.success('Logged Out Successfully!');
-        navigate('/login');
-      } else {
-        console.log('Failed to Logout: ', await res.text());
-      }
-    } catch(error) {
-      console.error('Error logging out: ',error);
-    }
-  }
   if (isAuthPage) return null;
 
   return (
     <header className="bg-white shadow-sm">
+      <ToastContainer/>
       <nav className="max-w-6xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
@@ -99,7 +79,7 @@ export function Navbar() {
               Community
             </Link>
             
-            {!isLoggedIn ? (
+            {!isAuthenticated ? (
               <Link
                 to="/login"
                 className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
@@ -162,11 +142,11 @@ export function Navbar() {
                   transformOrigin={{ horizontal: "right", vertical: "top" }}
                   anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                 >
-                  <MenuItem onClick={handleClose}>
+                  <MenuItem onClick={() => {handleClose(); handleProfileClick();}}>
                     <Avatar /> Profile
                   </MenuItem>
                   <Divider />
-                  <MenuItem onClick={() => {handleClose(); handleLogout();}}>
+                  <MenuItem onClick={() => {handleClose(); handleLogOut();}}>
                     <ListItemIcon>
                       <Logout fontSize="small" />
                     </ListItemIcon>
@@ -196,7 +176,7 @@ export function Navbar() {
               >
                 Community
               </Link>
-              {!isLoggedIn ? (
+              {!isAuthenticated ? (
                 <Link
                   to="/login"
                   className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-center"

@@ -4,11 +4,12 @@ import { LoginContext } from "../App";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
+import { AuthContext } from "../components/AuthContext";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5143";
 
 export function Community() {
-  const { isLoggedIn } = useContext(LoginContext);
+  const { isAuthenticated } = useContext(AuthContext);
   const [posts, setPosts] = useState([]);
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
@@ -46,7 +47,7 @@ export function Community() {
       console.log('Please provide title and text');
       return;
 }
-    if (!isLoggedIn) {
+    if (!isAuthenticated) {
       toast.warn("User must be logged in to post!", {
         position: "top-center",
         autoClose: 1000,
