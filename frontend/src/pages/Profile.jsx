@@ -4,6 +4,7 @@ import TextField from "@mui/material/TextField";
 import { MdEdit } from "react-icons/md";
 import Button from "@mui/material/Button";
 import { AuthContext } from "../components/AuthContext";
+import { useNavigate } from "react-router-dom";
 const Profile = () => {
   const {
     selectedAvatar,
@@ -13,10 +14,8 @@ const Profile = () => {
     isAuthenticated,
     isLoading,
   } = useContext(AuthContext);
-  
-  if (!isLoading) {
-    return <p>Loading...</p>;
-  } else {
+
+  const navigate = useNavigate();
     return isAuthenticated ? (
       <div className="h-[400px] w-[800px] rounded-lg shadow-md bg-white mx-auto my-20 flex flex-col ">
         <div className="avatar-wrapper rounded-full overflow-hidden w-[80px] h-[80px] mt-5 mx-auto">
@@ -31,9 +30,9 @@ const Profile = () => {
         <div className="emailWrapper"></div>
       </div>
     ) : (
-      Navigate("/login")
+      navigate("/login")
     );
-  }
+  
 };
 
 export default Profile;
