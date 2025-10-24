@@ -12,7 +12,7 @@ import Divider from "@mui/material/Divider";
 import Logout from "@mui/icons-material/Logout";
 import { ToastContainer, toast } from "react-toastify";
 import { AuthContext } from "./AuthContext";
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5143";
+import { BASE_URL } from "../config";
 
 export function Navbar() {
   const { isAuthenticated, selectedAvatar, setIsAuthenticated, setSelectedAvatar, setUser, setUsername, handleLogOut } = useContext(AuthContext);
@@ -96,8 +96,9 @@ export function Navbar() {
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                   >
+                    {/* Prefer context avatar, fall back to localStorage (useful in prod when session cookie isn't available) */}
                     <img
-                      src={selectedAvatar}
+                      src={selectedAvatar || (typeof window !== 'undefined' ? localStorage.getItem('avatar') : null) || '/boy.png'}
                       alt="Profile"
                       className="w-full h-full"
                     />

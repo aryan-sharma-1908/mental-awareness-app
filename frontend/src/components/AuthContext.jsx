@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5143";
+import { BASE_URL } from "../config";
 
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate();

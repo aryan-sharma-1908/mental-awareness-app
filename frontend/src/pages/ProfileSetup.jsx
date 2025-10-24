@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, Slide } from "react-toastify";
 import { AuthContext } from "../components/AuthContext";
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5143';
+import { BASE_URL } from "../config";
 const ProfileSetup = () => {
   const {selectedAvatar, setSelectedAvatar, username, setUsername} = useContext(AuthContext);
   const navigate = useNavigate();

@@ -5,8 +5,7 @@ import { toast, ToastContainer, Slide } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { AuthContext } from "../components/AuthContext";
-
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5143";
+import { BASE_URL } from "../config";
 
 export function Community() {
   const { isAuthenticated } = useContext(AuthContext);

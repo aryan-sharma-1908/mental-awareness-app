@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Logo } from "../components/Logo";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import { AuthContext } from "../components/AuthContext";
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5143";
+import { BASE_URL } from "../config";
 export function Login() {
   const { setIsAuthenticated, setUser, setSelectedAvatar, setUsername } =
     useContext(AuthContext);

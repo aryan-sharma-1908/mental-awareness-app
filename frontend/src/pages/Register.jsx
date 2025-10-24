@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Logo } from "../components/Logo";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5143';
+import { BASE_URL } from "../config";
 export function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
