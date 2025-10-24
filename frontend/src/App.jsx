@@ -9,7 +9,7 @@ import { Exercises } from "./pages/Exercises";
 import { Community } from "./pages/Community";
 import { LearnMore } from "./pages/LearnMore";
 import ProfileSetup from "./pages/ProfileSetup";
-import Profile from "./pages/profile";
+import Profile from "./pages/Profile";
 import AuthProvider from "./components/AuthContext";
 export const LoginContext = createContext();
 

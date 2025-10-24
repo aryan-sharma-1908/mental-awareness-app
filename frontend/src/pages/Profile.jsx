@@ -1,6 +1,4 @@
 import React, { useContext } from "react";
-import { LoginContext } from "../App";
-import TextField from "@mui/material/TextField";
 import { MdEdit } from "react-icons/md";
 import Button from "@mui/material/Button";
 import { AuthContext } from "../components/AuthContext";
