@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
@@ -102,6 +102,7 @@ const AuthProvider = ({ children }) => {
         isLoading,
       }}
     >
+      <ToastContainer/>
       {children}
     </AuthContext.Provider>
   );
