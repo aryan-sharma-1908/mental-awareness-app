@@ -1,7 +1,12 @@
 import React from 'react';
 import { Brain, Heart, Users, Sparkles, Target, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export function LearnMore() {
+  const navigate = useNavigate();
+  const handleJoinCommunity = () => {
+    navigate('/survey');
+  }
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 py-8 sm:py-16">
       <div className="max-w-6xl mx-auto px-4">
@@ -111,7 +116,7 @@ export function LearnMore() {
             Join thousands who have already taken the first step towards better
             mental health with TogetEase.
           </p>
-          <button className="bg-purple-600 text-white px-6 sm:px-8 py-3 rounded-lg text-lg font-medium hover:bg-purple-700 transition-colors flex items-center justify-center mx-auto">
+          <button className="bg-purple-600 text-white px-6 sm:px-8 py-3 rounded-lg text-lg font-medium hover:bg-purple-700 transition-colors flex items-center justify-center mx-auto" onClick={handleJoinCommunity}>
             Join Our Community <ArrowRight className="ml-2 h-5 w-5" />
           </button>
         </section>

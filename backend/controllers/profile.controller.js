@@ -89,3 +89,55 @@ exports.getProfile = async (req, res) => {
   }
 }
 
+exports.updateUsername = async (req, res) => {
+  try {
+    const { username } = req.body;
+
+    if (!username) {
+      console.error("Username is required for update");
+      return res.status(400).json({
+        success: false,
+        message: "Username is required"
+      })
+    }
+
+    const user = await User.findById(req.user.id);
+
+    if(!user) {
+      console.error('User not found for username update');
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      })
+    }
+
+    const existingUser = await User.findOne({
+      username,
+      _id: { $ne: user._id}
+    })
+
+    if(existingUser) {
+      console.error('Username already taken during update');
+      return res.status(400).json({
+        success: false,
+        message: 'Username already taken'
+      })
+    }
+
+    user.username = username;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Username updated successfully'
+    })
+
+  } catch (error) {
+    console.error("Error updating username: ", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again later."
+    })
+  }
+}

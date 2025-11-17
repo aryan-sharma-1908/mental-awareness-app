@@ -11,15 +11,17 @@ import { LearnMore } from "./pages/LearnMore";
 import ProfileSetup from "./pages/ProfileSetup";
 import Profile from "./pages/Profile";
 import AuthProvider from "./components/AuthContext";
+import SurveyForm from "./pages/SurveyForm";
 export const LoginContext = createContext();
 
-
 function App() {
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50">
       <AuthProvider>
         <Navbar />
         <Routes>
+          <Route path="/survey" element={<SurveyForm />} />
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

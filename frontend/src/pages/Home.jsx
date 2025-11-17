@@ -1,9 +1,20 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Heart, MessageCircle, Brain, Users, Shield, Star, ArrowRight } from 'lucide-react';
 import { Logo } from '../components/Logo';
 
 export function Home() {
+  const navigate = useNavigate();
+  const handleStartJourney = () => {
+    navigate('/survey');
+  }
+  const handleNavigateExercise = () => {
+    navigate('/exercises');
+  }
+  const handleNavigateCommunity = () => {
+    navigate('/community');
+  }
+
   return (
     <div>
       {/* Hero Section */}
@@ -16,7 +27,7 @@ export function Home() {
             Join our supportive community to relieve stress and anxiety through proven
             exercises, anonymous sharing, and meaningful connections.
           </p>
-          <button className="bg-purple-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-purple-700 transform hover:scale-105 transition-all">
+          <button className="bg-purple-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-purple-700 transform hover:scale-105 transition-all" onClick={handleStartJourney}>
             Start Your Journey
           </button>
         </div>
@@ -25,16 +36,20 @@ export function Home() {
       {/* Features */}
       <section className="max-w-6xl mx-auto px-4 py-16">
         <div className="grid md:grid-cols-3 gap-8">
-          <FeatureCard
-            icon={<Brain className="h-8 w-8 text-purple-600" />}
-            title="Guided Exercises"
-            description="Access a library of meditation, breathing, and mindfulness exercises designed by experts."
-          />
-          <FeatureCard
-            icon={<MessageCircle className="h-8 w-8 text-purple-600" />}
-            title="Anonymous Support"
-            description="Share your thoughts and feelings safely with our supportive community."
-          />
+          <button onClick={handleNavigateExercise} className='!text-left'>
+            <FeatureCard
+              icon={<Brain className="h-8 w-8 text-purple-600" />}
+              title="Guided Exercises"
+              description="Access a library of meditation, breathing, and mindfulness exercises designed by experts."
+            />
+          </button>
+          <button onClick={handleNavigateCommunity} className='!text-left'>
+            <FeatureCard
+              icon={<MessageCircle className="h-8 w-8 text-purple-600" />}
+              title="Anonymous Support"
+              description="Share your thoughts and feelings safely with our supportive community."
+            />
+          </button>
           <FeatureCard
             icon={<Heart className="h-8 w-8 text-purple-600" />}
             title="Daily Wellness"
@@ -114,7 +129,7 @@ export function Home() {
             Your journey to better mental wellness starts here.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-purple-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-purple-50 transition-colors flex items-center justify-center">
+            <button className="bg-white text-purple-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-purple-50 transition-colors flex items-center justify-center" onClick={handleStartJourney}>
               Join Now <ArrowRight className="ml-2 h-5 w-5" />
             </button>
             <Link
