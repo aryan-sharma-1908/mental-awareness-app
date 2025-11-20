@@ -11,6 +11,7 @@ import { LearnMore } from "./pages/LearnMore";
 import ProfileSetup from "./pages/ProfileSetup";
 import Profile from "./pages/Profile";
 import AuthProvider from "./components/AuthContext";
+import ChatBox from "./components/ChatBox";
 import SurveyForm from "./pages/SurveyForm";
 export const LoginContext = createContext();
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
         </Routes>
         <Footer />
+        <ChatBox />
       </AuthProvider>
     </div>
   );

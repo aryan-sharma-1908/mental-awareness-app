@@ -47,9 +47,14 @@ export function Login() {
         // Update context avatar and username immediately so Navbar reflects the change
         setSelectedAvatar(data?.user?.avatar || "/boy.png");
         setUsername(data?.user?.username || "");
-        // Persist to localStorage for quick restores
+        // Persist to localStorage for quick restores and socket auth
         localStorage.setItem("avatar", data?.user?.avatar || "/boy.png");
         localStorage.setItem("username", data?.user?.username || "");
+        // Store JWT token for socket.io authentication
+        if (data.token) {
+          localStorage.setItem("jwt", data.token);
+        }
+        try { localStorage.setItem('user', JSON.stringify(data.user)); } catch (e) {}
 
         // Check if user has completed profile
         if (!data?.user?.profileCompleted) {

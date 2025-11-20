@@ -12,12 +12,12 @@ const checkAuth = require("./middlewares/auth.middleware.js");
 const loginRoute = require('./routes/login.route.js');
 const postRoute = require('./routes/post.route.js');
 const logoutRoute = require('./routes/logout.route.js');
+const { startSocketServer } = require("./socket-server.js");
+const chatRoute = require("./routes/chat.routes.js");
 const whiteList = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  "https://www.mongodb.com/docs/atlas/security-whitelist",
-  "https://mental-awareness-app.vercel.app",
-  "https://mental-awareness-app-git-main-aryan-sharmas-projects-62cf0133.vercel.app",
+  process.env.FRONTEND_URL || "https://mental-awareness-app.vercel.app",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -40,16 +40,21 @@ app.use(morgan("dev"));
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
+app.use("/api/chat", chatRoute);
 app.use("/api/register", registerRoute);
 app.use("/api/login", loginRoute);
 app.use("/api/profile", profileRoute);
 app.use("/api/community", postRoute);
 app.use("/api/logout", logoutRoute);
 
+const httpServer = require("http").createServer(app);
+const io = startSocketServer(httpServer);
+
 connectDB()
   .then(() => {
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
+      console.log(`Socket.IO listening on the same HTTP server at http://localhost:${PORT}`);
     });
   })
   .catch((err) => {

@@ -53,6 +53,10 @@ export function Register() {
           theme: "light",
           transition: Slide,
         });
+        // Store JWT token for socket auth
+        if (data.token) {
+          localStorage.setItem("jwt", data.token);
+        }
         setTimeout(() => {
           navigate('/login');
         }, 1000);

@@ -177,6 +177,16 @@ export function Community() {
                     <span>
                       Posted by {post.user.username}
                     </span>
+                    <button
+                      onClick={() => {
+                        // open anonymous chat with this user and pass display name for header
+                        if (!post.user || !post.user._id) return;
+                        window.dispatchEvent(new CustomEvent('open-anon-chat', { detail: { otherUserId: post.user._id, otherUserName: post.user.username } }));
+                      }}
+                      className="ml-4 text-sm text-purple-600 hover:text-purple-700 bg-purple-50 px-2 py-1 rounded"
+                    >
+                      Message
+                    </button>
                   </div>
                 )}
               </div>

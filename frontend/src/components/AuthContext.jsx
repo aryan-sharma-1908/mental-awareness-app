@@ -48,8 +48,10 @@ const AuthProvider = ({ children }) => {
         // Keep for quick UI restore
         localStorage.setItem("username", data.user.username || "");
         localStorage.setItem("avatar", data.user.avatar || "/boy.png");
+        try { localStorage.setItem('user', JSON.stringify(data.user)); } catch (e) {}
       } else {
         setUser(null);
+        try { localStorage.removeItem('user'); } catch (e) {}
       }
     } catch (error) {
       console.error("Error while fetching user:", error);
@@ -76,6 +78,8 @@ const AuthProvider = ({ children }) => {
         setSelectedAvatar("/boy.png");
         localStorage.removeItem("avatar");
         localStorage.removeItem("username");
+        localStorage.removeItem('jwt');
+        try { localStorage.removeItem('user'); } catch (e) {}
         toast.success("Logged Out Successfully!");
         navigate("/login");
       } else {
