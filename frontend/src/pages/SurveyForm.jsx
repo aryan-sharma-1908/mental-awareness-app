@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { BASE_URL } from "../config";
 
 const questions_PHQ_9_Depression_screening = [
     { id: 1, question: "Little interest or pleasure in doing things", options: ["Not at all", "Several days", "More than half the days", "Almost every day"] },
@@ -26,11 +26,11 @@ const questions_GAD_7_Generalized_Anxiety_Disorder_7 = [
 ];
 
 const questions_WHO_5_Well_Being_Index = [
-    {id : 1, question: "I have felt cheerful and in good spirits", options: ["At no time","Some of the time","Less than half of the time", "More than half of the time", "Most of the time", "All of the time"]},
-    {id : 2, question: "I have felt calm and relaxed", options: ["At no time","Some of the time","Less than half of the time", "More than half of the time", "Most of the time", "All of the time"]},
-    {id : 3, question: "I have felt active and vigorous", options: ["At no time","Some of the time","Less than half of the time", "More than half of the time", "Most of the time", "All of the time"]},
-    {id : 4, question: "I woke up feeling fresh and rested", options: ["At no time","Some of the time","Less than half of the time", "More than half of the time", "Most of the time", "All of the time"]},
-    {id : 5, question: "My daily life has been filled with things that interest me", options: ["At no time","Some of the time","Less than half of the time", "More than half of the time", "Most of the time", "All of the time"]},
+    { id: 1, question: "I have felt cheerful and in good spirits", options: ["At no time", "Some of the time", "Less than half of the time", "More than half of the time", "Most of the time", "All of the time"] },
+    { id: 2, question: "I have felt calm and relaxed", options: ["At no time", "Some of the time", "Less than half of the time", "More than half of the time", "Most of the time", "All of the time"] },
+    { id: 3, question: "I have felt active and vigorous", options: ["At no time", "Some of the time", "Less than half of the time", "More than half of the time", "Most of the time", "All of the time"] },
+    { id: 4, question: "I woke up feeling fresh and rested", options: ["At no time", "Some of the time", "Less than half of the time", "More than half of the time", "Most of the time", "All of the time"] },
+    { id: 5, question: "My daily life has been filled with things that interest me", options: ["At no time", "Some of the time", "Less than half of the time", "More than half of the time", "Most of the time", "All of the time"] },
 
 ]
 
@@ -38,7 +38,41 @@ export default function SurveyForm() {
     const [currentSection, setCurrentSection] = useState(0);
     const [answers, setAnswers] = useState({});
     const [submitted, setSubmitted] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState(null);
     const [currentSlide, setCurrentSlide] = useState(0);
+
+    const submitForm = async (req, res) => {
+        setSubmitting(true);
+        setSubmitError(null);
+        try {
+            const payload = {
+                answers,
+                submittedAt: new Date().toISOString(),
+            };
+
+            const response = await fetch(`${BASE_URL}/api/survey`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(text || `Server responded ${response.status}`);
+            }
+
+            setSubmitted(true);
+        } catch (error) {
+            console.error("Survey submit error:", error);
+            setSubmitError(error.message || "Failed to submit");
+        } finally {
+            setSubmitting(false);
+        }
+    }
 
     // use the three explicit question sets (PHQ-9, GAD-7, WHO-5)
     const sections = [
@@ -79,8 +113,8 @@ export default function SurveyForm() {
         if (currentSection < sections.length - 1) {
             setCurrentSection(currentSection + 1);
         } else {
-            setSubmitted(true);
-            // TODO: send `answers` to backend
+            // final submit
+            submitForm();
         }
     };
 
@@ -197,9 +231,12 @@ export default function SurveyForm() {
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="text-sm text-gray-500">{isSectionComplete(currentSection) ? "Ready to submit" : "Complete all questions"}</div>
-                                    <Button onClick={submitSection} className="!bg-[#7E22CE]" disabled={!isSectionComplete(currentSection)}>
-                                        {currentSection === sections.length - 1 ? "Finish Survey" : "Submit Section"}
-                                    </Button>
+                                    <div className="flex flex-col items-end">
+                                        <Button onClick={submitSection} className="!bg-[#7E22CE]" disabled={!isSectionComplete(currentSection) || submitting}>
+                                            {currentSection === sections.length - 1 ? (submitting ? "Submitting..." : "Finish Survey") : "Submit Section"}
+                                        </Button>
+                                        {submitError ? <div className="text-xs text-red-600 mt-2">{submitError}</div> : null}
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>

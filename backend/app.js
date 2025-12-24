@@ -12,6 +12,7 @@ const checkAuth = require("./middlewares/auth.middleware.js");
 const loginRoute = require('./routes/login.route.js');
 const postRoute = require('./routes/post.route.js');
 const logoutRoute = require('./routes/logout.route.js');
+const surveyRoute = require('./routes/survey.route.js');
 const { startSocketServer } = require("./socket-server.js");
 const chatRoute = require("./routes/chat.routes.js");
 const whiteList = [
@@ -46,6 +47,7 @@ app.use("/api/login", loginRoute);
 app.use("/api/profile", profileRoute);
 app.use("/api/community", postRoute);
 app.use("/api/logout", logoutRoute);
+app.use("/api/survey", surveyRoute);
 
 const httpServer = require("http").createServer(app);
 const io = startSocketServer(httpServer);
