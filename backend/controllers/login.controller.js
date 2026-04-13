@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
 
     const token = jwt.sign(
       {
-        id: user._id,
+        _id: user._id,
         email: user.email,
       },
       process.env.JWT_SECRET,
@@ -44,12 +44,12 @@ exports.login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Login successful",
       token: token, // Return token so frontend can store it for socket auth
       user: {
-        id: user._id,
+        _id: user._id,
         username: user.username,
         name: user.name,
         avatar: user.avatar,
@@ -61,7 +61,7 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error("Error occurred during login:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Internal server error",
     });

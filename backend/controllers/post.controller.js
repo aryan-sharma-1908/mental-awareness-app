@@ -29,14 +29,14 @@ exports.post = async (req, res) => {
 
         const populatedPost = await newPost.populate("user", "name email username avatar");
 
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             message: 'Post created successfully',
             post: populatedPost
         })
     } catch (error) {
         console.error('Error creating post:', error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: 'Server error. Please try again later.'
         })
@@ -53,14 +53,14 @@ exports.getAllPosts = async (req, res) => {
                 message: 'No posts found'
             })
         }
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: 'Posts fetched successfully',
             posts
         })
     } catch (error) {
         console.error('Error fetching posts:', error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: 'Server error. Please try again later.'
         })

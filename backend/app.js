@@ -16,8 +16,8 @@ const surveyRoute = require('./routes/survey.route.js');
 const { startSocketServer } = require("./socket-server.js");
 const chatRoute = require("./routes/chat.routes.js");
 const whiteList = [
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
+  "http://localhost:5175",
+  "http://127.0.0.1:5177",
   process.env.FRONTEND_URL || "https://mental-awareness-app.vercel.app",
 ];
 const corsOptions = {

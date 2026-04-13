@@ -1,19 +1,70 @@
-import React, { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Heart, MessageCircle, Brain, Users, Shield, Star, ArrowRight } from 'lucide-react';
 import { Logo } from '../components/Logo';
+import { BASE_URL } from '../config';
 
 export function Home() {
   const navigate = useNavigate();
-  const handleStartJourney = () => {
-    navigate('/survey');
-  }
-  const handleNavigateExercise = () => {
-    navigate('/exercises');
-  }
-  const handleNavigateCommunity = () => {
-    navigate('/community');
-  }
+  const location = useLocation();
+
+  const [hideStartButtons, setHideStartButtons]       = useState(false);
+  const [retakeAvailableInDays, setRetakeAvailableInDays] = useState(0);
+  const [hasSubmittedBefore, setHasSubmittedBefore]   = useState(false);
+
+  const checkSurveyStatus = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/survey`, {
+        credentials: "include",
+      });
+
+      // Not logged in or network error — just show the button
+      if (!res.ok) {
+        setHideStartButtons(false);
+        setHasSubmittedBefore(false);
+        return;
+      }
+
+      const data  = await res.json();
+      const surveys = data.data ?? [];
+
+      if (surveys.length === 0) {
+        setHideStartButtons(false);
+        setHasSubmittedBefore(false);
+        return;
+      }
+
+      setHasSubmittedBefore(true);
+
+      // Most recent submission across all types
+      const latest = surveys.reduce((newest, s) =>
+        new Date(s.createdAt) > new Date(newest.createdAt) ? s : newest
+      );
+
+      const msSince = Date.now() - new Date(latest.createdAt).getTime();
+      const weekMs  = 7 * 24 * 60 * 60 * 1000;
+
+      if (msSince < weekMs) {
+        setHideStartButtons(true);
+        const days = Math.ceil((weekMs - msSince) / (1000 * 60 * 60 * 24));
+        setRetakeAvailableInDays(days);
+      } else {
+        setHideStartButtons(false);
+      }
+    } catch (e) {
+      console.warn("Could not check survey status", e);
+      setHideStartButtons(false);
+    }
+  };
+
+  // Re-check every time the page is visited or navigated to
+  useEffect(() => {
+    checkSurveyStatus();
+  }, [location.key]); // location.key changes on every navigation, even to same path
+
+  const handleStartJourney     = () => navigate('/survey');
+  const handleNavigateExercise = () => navigate('/exercises');
+  const handleNavigateCommunity = () => navigate('/community');
 
   return (
     <div>
@@ -27,9 +78,18 @@ export function Home() {
             Join our supportive community to relieve stress and anxiety through proven
             exercises, anonymous sharing, and meaningful connections.
           </p>
-          <button className="bg-purple-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-purple-700 transform hover:scale-105 transition-all" onClick={handleStartJourney}>
-            Start Your Journey
-          </button>
+          {!hideStartButtons ? (
+            <button
+              className="bg-purple-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-purple-700 transform hover:scale-105 transition-all"
+              onClick={handleStartJourney}
+            >
+              {hasSubmittedBefore ? 'Retake Survey' : 'Start Your Journey'}
+            </button>
+          ) : (
+            <div className="px-6 py-3 rounded-lg text-lg text-white bg-purple-400">
+              Survey submitted — retake available in {retakeAvailableInDays} {retakeAvailableInDays === 1 ? 'day' : 'days'}
+            </div>
+          )}
         </div>
       </section>
 
@@ -67,18 +127,9 @@ export function Home() {
                 Your Safe Space for Mental Wellness
               </h2>
               <div className="space-y-4">
-                <TrustPoint
-                  icon={<Shield className="h-6 w-6 text-green-600" />}
-                  text="100% Anonymous & Secure"
-                />
-                <TrustPoint
-                  icon={<Users className="h-6 w-6 text-blue-600" />}
-                  text="Supportive Community"
-                />
-                <TrustPoint
-                  icon={<Logo className="h-6 w-6" />}
-                  text="Expert-Guided Practices"
-                />
+                <TrustPoint icon={<Shield className="h-6 w-6 text-green-600" />} text="100% Anonymous & Secure" />
+                <TrustPoint icon={<Users className="h-6 w-6 text-blue-600" />}  text="Supportive Community" />
+                <TrustPoint icon={<Logo className="h-6 w-6" />}                 text="Expert-Guided Practices" />
               </div>
             </div>
             <div className="md:w-1/2">
@@ -92,7 +143,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* Testimonials */}
       <section className="bg-gray-50 py-16">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
@@ -101,24 +152,21 @@ export function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             <Testimonial
               content="TogetEase has been a game-changer for my mental health journey. The community support and guided exercises have helped me find balance in my daily life."
-              author="Sarah M."
-              role="Community Member"
+              author="Sarah M." role="Community Member"
             />
             <Testimonial
               content="As someone who struggled with anxiety, finding this platform was a blessing. The anonymous sharing feature helped me open up without fear of judgment."
-              author="Michael R."
-              role="Active Member"
+              author="Michael R." role="Active Member"
             />
             <Testimonial
               content="The daily exercises and supportive community have become an essential part of my wellness routine. I'm grateful for this safe space."
-              author="Emily L."
-              role="Community Member"
+              author="Emily L." role="Community Member"
             />
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA */}
       <section className="bg-purple-600 py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-6">
@@ -129,9 +177,18 @@ export function Home() {
             Your journey to better mental wellness starts here.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-purple-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-purple-50 transition-colors flex items-center justify-center" onClick={handleStartJourney}>
-              Join Now <ArrowRight className="ml-2 h-5 w-5" />
-            </button>
+            {!hideStartButtons ? (
+              <button
+                className="bg-white text-purple-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-purple-50 transition-colors flex items-center justify-center"
+                onClick={handleStartJourney}
+              >
+                {hasSubmittedBefore ? 'Retake Survey' : 'Join Now'} <ArrowRight className="ml-2 h-5 w-5" />
+              </button>
+            ) : (
+              <div className="bg-white/20 text-white px-6 py-3 rounded-lg text-lg font-medium flex items-center justify-center">
+                Retake available in {retakeAvailableInDays} {retakeAvailableInDays === 1 ? 'day' : 'days'}
+              </div>
+            )}
             <Link
               to="/learn-more"
               className="border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-purple-700 transition-colors"
@@ -168,11 +225,7 @@ function Testimonial({ content, author, role }) {
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
       <div className="flex mb-4">
-        <Star className="h-5 w-5 text-yellow-400" />
-        <Star className="h-5 w-5 text-yellow-400" />
-        <Star className="h-5 w-5 text-yellow-400" />
-        <Star className="h-5 w-5 text-yellow-400" />
-        <Star className="h-5 w-5 text-yellow-400" />
+        {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 text-yellow-400" />)}
       </div>
       <p className="text-gray-600 mb-4">{content}</p>
       <div>

@@ -15,7 +15,7 @@ exports.setupProfile = async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id);
 
     if (!user) {
       console.error('User not found for profile setup');
@@ -43,7 +43,7 @@ exports.setupProfile = async (req, res) => {
 
     await user.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Profile setup successful",
       user: {
@@ -56,7 +56,7 @@ exports.setupProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Profile setup error:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Server error",
     });
@@ -65,7 +65,7 @@ exports.setupProfile = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findById(req.user._id).select('-password');
 
     if(!user) {
       console.error('User not found for profile retrieval');
@@ -75,13 +75,13 @@ exports.getProfile = async (req, res) => {
       })
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'Profile fetched successfully',
       user
     })
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: 'Server error. Please try again later.',
     })
@@ -101,7 +101,7 @@ exports.updateUsername = async (req, res) => {
       })
     }
 
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id);
 
     if(!user) {
       console.error('User not found for username update');
@@ -128,14 +128,14 @@ exports.updateUsername = async (req, res) => {
 
     await user.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'Username updated successfully'
     })
 
   } catch (error) {
     console.error("Error updating username: ", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Server error. Please try again later."
     })

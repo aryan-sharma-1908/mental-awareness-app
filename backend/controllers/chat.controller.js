@@ -5,7 +5,7 @@ const { genAnonName } = require('../utils/genAnonName');
 function chatIdFor(u1, u2){ return [u1,u2].sort().join('_'); }
 
 exports.openChat = async (req, res) => {
-     const userId = req.user.id;
+     const userId = req.user._id;
       const { otherUserId } = req.body;
       if (!otherUserId) return res.status(400).json({ error: 'otherUserId required' });
       const chatId = chatIdFor(userId, otherUserId);
@@ -19,7 +19,7 @@ exports.openChat = async (req, res) => {
 }
 
 exports.messageHandler = async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user._id;
       const { chatId } = req.params;
       const limit = Math.min(parseInt(req.query.limit || '50', 10), 200);
       const before = req.query.before ? new Date(req.query.before) : new Date();
